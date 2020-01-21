@@ -46,8 +46,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install OpenCL & libboost (required by LightGBM GPU version)
 RUN apt-get install -y ocl-icd-libopencl1 libboost-all-dev && \
-    mkdir -p /etc/OpenCL/vendors && \
-    echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd && \
     /tmp/clean-layer.sh
 
 # Install LightGBM with GPU
@@ -61,6 +59,8 @@ RUN pip uninstall -y lightgbm && \
     make -j$(nproc) && \
     cd /usr/local/src/LightGBM/python-package && \
     python setup.py install --precompile && \
+    mkdir -p /etc/OpenCL/vendors && \
+    echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd && \
     /tmp/clean-layer.sh
 
 # Install JAX
